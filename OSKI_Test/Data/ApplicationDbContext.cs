@@ -1,4 +1,5 @@
-﻿using Duende.IdentityServer.EntityFramework.Options;
+﻿using Duende.IdentityServer.EntityFramework.Entities;
+using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,5 +14,17 @@ namespace OSKI_Test.Data
         {
 
         }
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<QuizToUser> QuizToUser { get; set; }
+        public DbSet<TrueAnswer> AnswerToQuestion { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<QuizToUser>().HasKey(u => new { u.QuizId, u.UserId });
+            modelBuilder.Entity<TrueAnswer>().HasKey(u => new { u.QuizId, u.QuestionId, u.OptionId });
+
+        }
+
     }
 }

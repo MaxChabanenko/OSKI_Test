@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
 
 export class Home extends Component {
-  static displayName = Home.name;
+    static displayName = Home.name;
 
-  render() {
-    return (
-      <div>
-        <h1>Hello, world!</h1>
-        <p>Welcome to your new single-page application, built with:</p>
-        <ul>
-          <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-          <li><a href='https://facebook.github.io/react/'>React</a> for client-side code</li>
-          <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-        </ul>
-        <p>To help you get started, we have also set up:</p>
-        <ul>
-          <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-          <li><strong>Development server integration</strong>. In development mode, the development server from <code>create-react-app</code> runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-          <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration produces minified, efficiently bundled JavaScript files.</li>
-        </ul>
-        <p>The <code>ClientApp</code> subdirectory is a standard React application based on the <code>create-react-app</code> template. If you open a command prompt in that directory, you can run <code>npm</code> commands such as <code>npm test</code> or <code>npm install</code>.</p>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div>
+                <h1>OSKI Solutions</h1>
+                <h1>Chabanenko Max</h1>
+                <p>User testing application. User should be able to sign in into application (sign up isn't required). Users can only see and pass tests that have been assigned to them. Once user completed the test, his mark should be stored and user should see the test as completed without ability to retake it. Only user-side functional is required (viewing available and completed tests, passing the test).</p>
+                <b>Application requirements:</b>
+                <br />
+                <i>1. Backend (Web API)</i>
+                <ul>
+                    <li>Adhere to OOP & SOLID principles</li>
+                    <li>One of the popular architectures</li>
+                    <li>Authorization</li>
+                </ul>
+                <b>optional, would be a plus:</b>
+                <ul>
+                    <li>Swagger documentation</li>
+                    <li>Cover functionality with unit tests</li>
+                    <li>Cover functionality with integration tests</li>
+                    <li>Add ability to run application inside Docker container</li>
+                </ul>
+                <i>2. Frontend (optional, would be a plus)</i>
+                <ul>
+                    <li>SPA app using one of the popular frameworks (React / Vue / Angular)</li>
+                </ul>
+            </div>
+        );
+    }
 }
