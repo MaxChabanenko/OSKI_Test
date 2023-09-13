@@ -348,9 +348,6 @@ namespace OSKI_Test.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -368,13 +365,34 @@ namespace OSKI_Test.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("OSKI_Test.Models.AssignedQuiz", b =>
+                {
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuizId", "UserId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("QuizResponses");
+                });
+
             modelBuilder.Entity("OSKI_Test.Models.Option", b =>
                 {
-                    b.Property<int>("OptionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OptionId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("QuestionId")
                         .HasColumnType("int");
@@ -383,7 +401,7 @@ namespace OSKI_Test.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("OptionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
 
@@ -392,55 +410,52 @@ namespace OSKI_Test.Migrations
 
             modelBuilder.Entity("OSKI_Test.Models.Question", b =>
                 {
-                    b.Property<int>("QuestionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("AssignedQuizQuizId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AssignedQuizUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SelectedOptionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("QuestionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("QuizId");
+
+                    b.HasIndex("AssignedQuizQuizId", "AssignedQuizUserId");
 
                     b.ToTable("Question");
                 });
 
             modelBuilder.Entity("OSKI_Test.Models.Quiz", b =>
                 {
-                    b.Property<int>("QuizId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuizId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.HasKey("QuizId");
+                    b.Property<string>("QuizName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Quizzes");
-                });
-
-            modelBuilder.Entity("OSKI_Test.Models.QuizToUser", b =>
-                {
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("QuizId", "UserId");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("QuizToUser");
                 });
 
             modelBuilder.Entity("OSKI_Test.Models.TrueAnswer", b =>
@@ -514,21 +529,7 @@ namespace OSKI_Test.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OSKI_Test.Models.Option", b =>
-                {
-                    b.HasOne("OSKI_Test.Models.Question", null)
-                        .WithMany("Options")
-                        .HasForeignKey("QuestionId");
-                });
-
-            modelBuilder.Entity("OSKI_Test.Models.Question", b =>
-                {
-                    b.HasOne("OSKI_Test.Models.Quiz", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId");
-                });
-
-            modelBuilder.Entity("OSKI_Test.Models.QuizToUser", b =>
+            modelBuilder.Entity("OSKI_Test.Models.AssignedQuiz", b =>
                 {
                     b.HasOne("OSKI_Test.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
@@ -543,6 +544,24 @@ namespace OSKI_Test.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("OSKI_Test.Models.Option", b =>
+                {
+                    b.HasOne("OSKI_Test.Models.Question", null)
+                        .WithMany("Options")
+                        .HasForeignKey("QuestionId");
+                });
+
+            modelBuilder.Entity("OSKI_Test.Models.Question", b =>
+                {
+                    b.HasOne("OSKI_Test.Models.Quiz", null)
+                        .WithMany("Questions")
+                        .HasForeignKey("QuizId");
+
+                    b.HasOne("OSKI_Test.Models.AssignedQuiz", null)
+                        .WithMany("CorrectQuestions")
+                        .HasForeignKey("AssignedQuizQuizId", "AssignedQuizUserId");
                 });
 
             modelBuilder.Entity("OSKI_Test.Models.TrueAnswer", b =>
@@ -570,6 +589,11 @@ namespace OSKI_Test.Migrations
                     b.Navigation("Question");
 
                     b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("OSKI_Test.Models.AssignedQuiz", b =>
+                {
+                    b.Navigation("CorrectQuestions");
                 });
 
             modelBuilder.Entity("OSKI_Test.Models.Question", b =>

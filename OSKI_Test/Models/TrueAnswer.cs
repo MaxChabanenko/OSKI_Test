@@ -9,7 +9,7 @@ namespace OSKI_Test.Models
         public int QuestionId { get; set; }
         public int OptionId { get; set; }
 
-
+        //for foreign keys
         [JsonIgnore]
         public Quiz Quiz { get; set; }
         [JsonIgnore]

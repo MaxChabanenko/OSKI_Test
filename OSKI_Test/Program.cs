@@ -4,13 +4,25 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using OSKI_Test.Data;
 using OSKI_Test.Models;
+using OSKI_Test.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<QuizService>();
+
+builder.Services.AddScoped<IRepository<Quiz>, QuizRepository>();
+builder.Services.AddScoped<IQuiz, QuizRepository>();
+
+//builder.Services.AddSingleton<IQuiz>();
+
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+options.UseSqlServer(connectionString));
+     
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -22,15 +34,24 @@ builder.Services.AddIdentityServer()
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddControllers/*WithViews*/();
 builder.Services.AddRazorPages();
+
+
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseMigrationsEndPoint();
+    
 }
 else
 {
@@ -42,13 +63,18 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+
 app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();
 
+//app.UseEndpoints(endpoint => endpoint.MapControllers());
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.MapFallbackToFile("index.html"); ;

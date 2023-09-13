@@ -4,9 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace OSKI_Test.Models
 {
-    public class Option
+    public class Option : IEntity<int>
     {
-        public int OptionId { get; set; }
+        [Key]
+        public int Id { get; set; }
 
         [Required]
         public string Text { get; set; }

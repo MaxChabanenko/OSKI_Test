@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OSKI_Test.Migrations
 {
-    public partial class quizcreate : Migration
+    public partial class quizmodelcreation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,7 +28,6 @@ namespace OSKI_Test.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -110,12 +109,13 @@ namespace OSKI_Test.Migrations
                 name: "Quizzes",
                 columns: table => new
                 {
-                    QuizId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuizName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Quizzes", x => x.QuizId);
+                    table.PrimaryKey("PK_Quizzes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -225,65 +225,74 @@ namespace OSKI_Test.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
-                columns: table => new
-                {
-                    QuestionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QuizId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Question", x => x.QuestionId);
-                    table.ForeignKey(
-                        name: "FK_Question_Quizzes_QuizId",
-                        column: x => x.QuizId,
-                        principalTable: "Quizzes",
-                        principalColumn: "QuizId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QuizToUser",
+                name: "QuizResponses",
                 columns: table => new
                 {
                     QuizId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuizToUser", x => new { x.QuizId, x.UserId });
+                    table.PrimaryKey("PK_QuizResponses", x => new { x.QuizId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_QuizToUser_AspNetUsers_ApplicationUserId",
+                        name: "FK_QuizResponses_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_QuizToUser_Quizzes_QuizId",
+                        name: "FK_QuizResponses_Quizzes_QuizId",
                         column: x => x.QuizId,
                         principalTable: "Quizzes",
-                        principalColumn: "QuizId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Question",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SelectedOptionId = table.Column<int>(type: "int", nullable: true),
+                    AssignedQuizQuizId = table.Column<int>(type: "int", nullable: true),
+                    AssignedQuizUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    QuizId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Question", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Question_QuizResponses_AssignedQuizQuizId_AssignedQuizUserId",
+                        columns: x => new { x.AssignedQuizQuizId, x.AssignedQuizUserId },
+                        principalTable: "QuizResponses",
+                        principalColumns: new[] { "QuizId", "UserId" });
+                    table.ForeignKey(
+                        name: "FK_Question_Quizzes_QuizId",
+                        column: x => x.QuizId,
+                        principalTable: "Quizzes",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Option",
                 columns: table => new
                 {
-                    OptionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QuestionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Option", x => x.OptionId);
+                    table.PrimaryKey("PK_Option", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Option_Question_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Question",
-                        principalColumn: "QuestionId");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -301,19 +310,19 @@ namespace OSKI_Test.Migrations
                         name: "FK_AnswerToQuestion_Option_OptionId",
                         column: x => x.OptionId,
                         principalTable: "Option",
-                        principalColumn: "OptionId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AnswerToQuestion_Question_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Question",
-                        principalColumn: "QuestionId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AnswerToQuestion_Quizzes_QuizId",
                         column: x => x.QuizId,
                         principalTable: "Quizzes",
-                        principalColumn: "QuizId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -408,13 +417,18 @@ namespace OSKI_Test.Migrations
                 columns: new[] { "SubjectId", "SessionId", "Type" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Question_AssignedQuizQuizId_AssignedQuizUserId",
+                table: "Question",
+                columns: new[] { "AssignedQuizQuizId", "AssignedQuizUserId" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Question_QuizId",
                 table: "Question",
                 column: "QuizId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuizToUser_ApplicationUserId",
-                table: "QuizToUser",
+                name: "IX_QuizResponses_ApplicationUserId",
+                table: "QuizResponses",
                 column: "ApplicationUserId");
         }
 
@@ -448,19 +462,19 @@ namespace OSKI_Test.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "QuizToUser");
-
-            migrationBuilder.DropTable(
                 name: "Option");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Question");
 
             migrationBuilder.DropTable(
-                name: "Question");
+                name: "QuizResponses");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Quizzes");

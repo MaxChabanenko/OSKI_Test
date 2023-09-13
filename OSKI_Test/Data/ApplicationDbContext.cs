@@ -15,13 +15,15 @@ namespace OSKI_Test.Data
 
         }
         public DbSet<Quiz> Quizzes { get; set; }
-        public DbSet<QuizToUser> QuizToUser { get; set; }
+        //public DbSet<Question> Questions { get; set; }
+        //public DbSet<Option> Options { get; set; }
+        public DbSet<AssignedQuiz> QuizResponses { get; set; }
         public DbSet<TrueAnswer> AnswerToQuestion { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<QuizToUser>().HasKey(u => new { u.QuizId, u.UserId });
+            modelBuilder.Entity<AssignedQuiz>().HasKey(u => new { u.QuizId, u.UserId });
             modelBuilder.Entity<TrueAnswer>().HasKey(u => new { u.QuizId, u.QuestionId, u.OptionId });
 
         }
