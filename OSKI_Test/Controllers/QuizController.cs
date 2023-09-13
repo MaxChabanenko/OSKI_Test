@@ -18,35 +18,124 @@ namespace OSKI_Test.Controllers
             quizService = vs;
             context = ct;
         }
+        /// <summary>
+        /// Create quiz
+        /// </summary>
+        /// <remarks>
+        /// Example:   
+        ///
+        ///{
+        ///  "id": 0,
+        ///  "quizName": "History (Completed)",
+        ///  "questions": [
+        ///    {
+        ///      "id": 0,
+        ///      "text": "In which year did World War I begin?",
+        ///"options": [
+        ///        {
+        ///          "id": 0,
+        ///          "text": "1923"
+        ///        },
+        ///        {
+        ///          "id": 0,
+        ///          "text": "1938"
+        ///        },
+        ///        {
+        ///    "id": 0,
+        ///          "text": "1917"
+        ///        },
+        ///        {
+        ///    "id": 0,
+        ///          "text": "1914"
+        ///        }
+        ///      ],
+        ///      "selectedOptionId": 4
+        ///    },
+        ///{
+        ///    "id": 0,
+        ///      "text": "Where was John F. Kennedy assassinated?",
+        ///"options": [
+        ///        {
+        ///        "id": 0,
+        ///          "text": "New York"
+        ///        },
+        ///        {
+        ///        "id": 0,
+        ///          "text": "Austin"
+        ///        },
+        ///        {
+        ///        "id": 0,
+        ///          "text": "Dallas"
+        ///        },
+        ///        {
+        ///        "id": 0,
+        ///          "text": "Miami"
+        ///        }
+        ///      ],
+        ///      "selectedOptionId": 6
+        ///    }
+        ///  ]
+        ///}
+        ///
+        /// </remarks>
+        /// <param name="quiz">Quiz</param>
+        /// <returns></returns>
         [HttpPost("Create")]
-        public IActionResult Create([FromBody] Quiz v)
+        public IActionResult Create([FromBody] Quiz quiz)
         {
-            quizService.Create(v);
+            quizService.Create(quiz);
             return Ok();
         }
+        /// <summary>
+        /// Get one quiz by id
+        /// </summary>
+        /// <param name="id">Quiz Id</param>
+        /// <returns>First or Default Quiz found by Id</returns>
         [HttpGet("Read")]
         public IActionResult GetById(int id)
         {
             return Ok(quizService.GetById(id));
         }
+        /// <summary>
+        /// Get ALL quizes
+        /// </summary>
+        /// <returns>All quizes in DB</returns>
         [HttpGet("ReadAll")]
         public IEnumerable<Quiz> GetAllQuizzes()
         {
             return quizService.GetAll();
         }
+        /// <summary>
+        /// Update quiz
+        /// </summary>
+        /// <remarks>
+        /// Finds quiz with the same ID and updates it's values
+        /// </remarks>
+        /// <param name="quiz">Quiz</param>
+        /// <returns>Updated quiz</returns>
         [HttpPut("Update")]
         public IActionResult Update(Quiz quiz)
         {
             return Ok(quizService.Update(quiz));
         }
-
+        /// <summary>
+        /// Delete quiz
+        /// </summary>
+        /// <remarks>
+        /// Deletes all related entities
+        /// </remarks>
+        /// <param name="id">Id</param>
         [HttpDelete("Delete")]
         public IActionResult DeleteQuiz(int id)
         {
             quizService.Delete(id);
             return Ok();
         }
-
+        /// <summary>
+        /// Assign quiz for user
+        /// </summary>
+        /// <param name="quizId">Quiz Id</param>
+        /// <param name="userId">User Id (ASP.NET user's GUID)</param>
         [HttpPost("AssignQuiz")]
         public IActionResult AssignQuiz(int quizId, string userId)
         {
@@ -60,7 +149,14 @@ namespace OSKI_Test.Controllers
             else
                 return BadRequest("User or Quiz not found");
         }
-
+        /// <summary>
+        /// Submit quiz
+        /// </summary>
+        /// <remarks>
+        /// User must be assigned with Quiz and correct answer entry for questions must exist in DB
+        /// </remarks>
+        /// <param name="quizId">Quiz Id</param>
+        /// <param name="userId">User Id (ASP.NET user's GUID)</param>
         [HttpPost("SubmitQuiz")]
         public IActionResult SubmitQuiz(int quizId, string userId)
         {

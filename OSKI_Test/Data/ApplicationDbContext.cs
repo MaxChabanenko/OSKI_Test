@@ -15,8 +15,6 @@ namespace OSKI_Test.Data
 
         }
         public DbSet<Quiz> Quizzes { get; set; }
-        //public DbSet<Question> Questions { get; set; }
-        //public DbSet<Option> Options { get; set; }
         public DbSet<AssignedQuiz> QuizResponses { get; set; }
         public DbSet<TrueAnswer> AnswerToQuestion { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

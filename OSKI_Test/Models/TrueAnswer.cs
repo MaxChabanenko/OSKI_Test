@@ -1,7 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace OSKI_Test.Models
-{
+{/// <summary>
+ /// Model for storing true answers
+ /// This model isn't sent to API, so user shouldn't know true answers
+ /// </summary>
     public class TrueAnswer
     {
 

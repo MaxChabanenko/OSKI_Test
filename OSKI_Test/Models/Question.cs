@@ -16,7 +16,9 @@ namespace OSKI_Test.Models
 
         [Required]
         public List<Option> Options { get; set; }
-
+        /// <summary>
+        /// Later SelectedOptionId is compared with correct answer in DB and if true, question added to result as correct
+        /// </summary>
         [DefaultValue(null)]
         public int? SelectedOptionId { get; set; }
 

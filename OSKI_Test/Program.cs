@@ -13,9 +13,6 @@ builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<IRepository<Quiz>, QuizRepository>();
 builder.Services.AddScoped<IQuiz, QuizRepository>();
 
-//builder.Services.AddSingleton<IQuiz>();
-
-
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -35,9 +32,15 @@ builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var basePath = AppContext.BaseDirectory;
 
-builder.Services.AddControllers/*WithViews*/();
+    var xmlPath = Path.Combine(basePath, "QuizWebAPI.xml");
+    options.IncludeXmlComments(xmlPath);
+});
+
+builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
 
@@ -67,9 +70,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();
-
-//app.UseEndpoints(endpoint => endpoint.MapControllers());
-
 
 app.MapControllerRoute(
     name: "default",

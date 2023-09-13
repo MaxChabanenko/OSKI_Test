@@ -12,7 +12,7 @@ using OSKI_Test.Data;
 namespace OSKI_Test.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230913074201_quiz model creation")]
+    [Migration("20230913135529_quiz model creation")]
     partial class quizmodelcreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

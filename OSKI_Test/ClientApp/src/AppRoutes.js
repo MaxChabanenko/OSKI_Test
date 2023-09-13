@@ -1,6 +1,8 @@
 import ApiAuthorzationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
+import  Quiz  from "./components/Quiz";
+
 import { Home } from "./components/Home";
 
 const AppRoutes = [
@@ -11,7 +13,11 @@ const AppRoutes = [
   {
     path: '/counter',
     element: <Counter />
-  },
+    },
+    {
+        path: '/quiz',
+        element: <Quiz />
+    },
   {
     path: '/fetch-data',
     requireAuth: true,
